@@ -1,1 +1,0 @@
-If I understand how to use Git, then this should work!
