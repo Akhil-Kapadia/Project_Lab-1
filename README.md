@@ -12,6 +12,10 @@ When making a commit, Make your comment informational, include changes to files 
 
 INSTRUCTIONS:
 
+Setting Up:
+1	You'll need to create a username for git for when you commit things.
+Enter git config --global user.name "Your name Here"
+
 Getting Started (1st time):
 1	Goto an empty folder (ie "Project Lab 1")
 2	Right click and select "Git bash Here"
@@ -23,5 +27,19 @@ and open the "Project_Lab-1" folder. Right click and open git bash again.
 SAVING YOUR CHANGES:
 (Assuming git's already open in the repo) 
 1	You'll need to "commit" the changes. What this does is it record the changes you've made. ie old file - new file = changes.
-This doesn't upload anything though, it just tells git what changes need to be uploaded.
-Enter "git commit fileName.type
+This doesn't upload anything though, it just tells git what changes need to be uploaded. 
+MAKE SURE WHEN YOU COMMIT, COMMENT WHAT CHANGES YOU'VE MADE!
+Enter "git commit fileName.type"
+You can use "git status" to find out what files you've changed.
+2	To actually save you changes to github you'll need to "push" the commit you've made.
+Be prepared, you might need to login in to github.
+Enter "git push"
+3	Done!
+
+ADDING A FILE:
+1	TO add a file to the repo:
+Enter "git add fileName.type"
+Then commit and push following tut above.
+
+Thats about it!
+
