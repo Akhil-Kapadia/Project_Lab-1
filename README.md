@@ -13,8 +13,8 @@ When making a commit, Make your comment informational, include changes to files 
 INSTRUCTIONS:
 
 Setting Up:
-1	You'll need to create a username for git for when you commit things.
-Enter git config --global user.name "Your name Here"
+1.	You'll need to create a username for git for when you commit things. Enter "git config --global user.name "Your name Here""
+2.	Either download Notepad++ (recommended) or enter this into terminal "git config core.editor notepad"
 
 Getting Started (1st time):
 1.	Goto an empty folder (ie "Project Lab 1")
@@ -42,4 +42,3 @@ FIND PAST VERSIONS:
 Goto the github repo and click on commits.
 
 Thats about it!
-
