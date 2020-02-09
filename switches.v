@@ -8,7 +8,7 @@ output reg [7:0] duty;
 
 always @ (sw)
 //Switch case that uses sw[0-8].
-case (sw)
+case (sw)	//Preferably I want sw[2-7] to increase duty cycle by 40 to increase speed of motors. IDK how to do that though. If multiple switches are on then that will create problems I'm sure...
 	b'000: //1st switch Set both enables to 1 to start motors motors
 		begin
 			JA[0]=1;
