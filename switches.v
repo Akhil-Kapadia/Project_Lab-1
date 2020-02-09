@@ -31,18 +31,19 @@ case (sw)	//Preferably I want sw[2-7] to increase duty cycle by 40 to increase s
 		begin
 			duty = d'120;
 		end
-	b'101
+	b'101:
 		begin
 			duty = d'160;
 		end
-	b'110
+	b'110:
 		begin
 			duty = d'200;
 		end
-	b'111
+	b'111:
 		begin
 			duty=d'255;
 		end
+	default:
 endcase
 
 

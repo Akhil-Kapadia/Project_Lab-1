@@ -14,7 +14,7 @@ output [7:0] JA,	//Not sure how to output signal to pmod. How many bits is it? W
 //And we'll output the inverse(?) to inputs 2 & 4. (-voltage)
 //Or should they all be the same?
 always @ (JA)
-	if (JA[4] < 1);	//If current comparator circuit outputs <1, then set enables to 1.
+	if (JA[3] < 1);	//If current comparator circuit outputs <1, then set enables to 1.
 		begin
 			JA[1] = 1;	//Pins to ribbon cable for hbridge enables.
 			JA[0] = 1;
