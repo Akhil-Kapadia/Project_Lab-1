@@ -1,7 +1,7 @@
 //Adapted from Rice Rodrigues tutorial code.
 
 
-module 7seg(
+module sevenSeg(
      input clk,
 	 input [7:0] amps [1:0],
      output reg [3:0] an,      // 4 Digits on Basys 3 Board
@@ -22,11 +22,14 @@ module 7seg(
      // and usually unnecessary, and if you're not careful it will cause timing
      // issues. This isn't an issue for a simple program like this though.
      always @ (*)
-          case(refresh)
+     case(refresh)
           2'b00:
                begin
                     an = 4'b0111;
-                    seg = 7'b1000111;
+					//If statement here to change what displays.
+//					Checks port JA[7:6].
+                    seg = 7'b1000000;	//Displays 0
+	          //seg = 7'b1111001;		//Displays 1
                end
           2'b01:
                begin
@@ -36,11 +39,15 @@ module 7seg(
           2'b10:
                begin
                     an = 4'b1101;
-                    seg = 7'b0001000;
+					//Checks switch[1] state to see if going
+//					forwards or backwards. Updates accordingly.
+                    seg = 7'b0001110;	//Displays F
+		  //seg = 7'b0000000;			//Displays B
                end
           2'b11:
                begin
                     an = 4'b1110;
-                    seg = 7'b1111001;
+                    seg = 7'b1111111;	//Off
                end
           endcase
+endmodule
