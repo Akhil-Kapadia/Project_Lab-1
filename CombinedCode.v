@@ -33,18 +33,28 @@
 //Main Module
 //-----------------------------------------------------
 module main(
+input clk,
 input pulse,
-input [1:0] JA,
+input [1:0] JAI,
 output [7:2] JA,
 input [7:0] sw
+reg rate
 );
+
+//instaniate pwm with duty set be rate at 25khz.
+pwm freq(
+	.clk (clk),
+	.duty (duty),
+	.pulse (pulse)
+);
+
 
 //Turns rover on and off based on 1st switch
 always @ (JA[1:0])	//This is the same as {JA[1] || JA[0]), right?
 begin
 	if (~JA[0] && ~JA[1])	//If no Overcurrent detected.
 	begin
-		assign JA[3:2] = (JA[0]) ? pulse : 0 ;
+		assign JA[3:2] = (|JA[3:0]) ? pulse : 0 ;	//Conditonal operator before bus.
 	end
 
 //	if(sw[0]) //If ON state.
@@ -62,7 +72,37 @@ begin
 //	end
 end
 
-//Change the frequency to 1KHz so pwm signal makes noticable change in motor speeds.
+
+//Checks sw[3:1] for direction of motor than outputs it to hbridge inputs. 
+assign JA[7:4] = (sw[1]) ? 3'b0110 : 3'b1001 ;	//Sets rover forwards or backwards
+assign JA[7:4] = (sw[2]) ? 3'b0101 : JA_old ;	//Sets rover to go right if ON
+assign JA[7:4] = (sw[3]) ? 3'b1010 : JA_old ;	//Sets rover to go left if ON
+
+always @ (posedge clk)
+	JA_old <= JA;
+//Used for case statement, Sets percentage of max duty to be used.
+
+assign rate = sw[7:4];
+
+
+//
+
+begin
+	casex(rate)
+	3'b001: begin
+			duty = 1024;
+			end
+	3'b010:	begin
+			duty = 1024*2;
+			end
+	3'b011: begin
+			duty = 1024*3;
+			end
+	3'b100: begin
+			duty = 4095;
+			end
+	endcase
+
 
 endmodule
 //-----------------------------------------------------
@@ -73,24 +113,34 @@ endmodule
 //Module For Switches
 //-----------------------------------------------------
 module switch(
-input [7:0] sw,
-output [7:4] JA, //Sets the inputs of HBRidge -> Controls direction  of rover.
-output reg [2:0] rate	//For use in case statement in pwm.v -  Will store how many switches toggled.
+input clk,
+input [7:0] sw,		//Switch states
+output [3:0] IN, 		//Sets the inputs of HBRidge -> Controls direction  of rover.
+output [1:0] EN,
+input [1:0] OC,
+output reg [11:0] duty,	//For use in case statement in pwm.v -  Will store how many switches toggled.
+input pulse
 );
+reg temp[3:0];	//Saves old IN bits.
 
-//JA[4] == H-Bridge Input 1
-//JA[7] == H-Bridge Input 2
-//JA[5] == H-Bridge Input 3
-//JA[6] == H-Bridge Input 4
+// Turns rover on if switch is flipped and OC isnt 1.
+assign EN[1:0] = (|OC[1:0] && ~sw[0] ) ? 0 : pulse ; 	//Sets the EN to pulse if OC isnt 1 and 1st switch is ON 
 
-always @ (sw[7:1])
-begin
-	assign JA[7:4] = (sw[1]) ? 3'b0110 : 3'b1001 ;	//Sets rover forwards or backwards
-	assign JA[7:4] = (sw[2]) ? 3'b0101 : 3'bxxxx ;	//Sets rover to go right if ON
-	assign JA[7:4] = (sw[3]) ? 3'b1010 : 3'bxxxx ;	//Sets rover to go left if ON
-	
-	rate = sw[4] + sw[5] + sw[6] + sw[7];
-end
+//Change the duty depending on how many switches toggled.
+assign duty = (sw[7:4] == 1) ? 1024 : duty ;
+assign duty = (sw[7:4] == 2) ? 2048 : duty ;
+assign duty = (sw[7:4] == 3) ? 3072 : duty ;
+assign duty = (sw[7:4] == 4) ? 4095 : duty ;
+
+
+//IN[0] == H-Bridge Input 1.
+//IN[1] == H-Bridge Input 2.
+//IN[2] == H-Bridge Input 3.
+//IN[3] == H-Bridge Input 4.
+
+assign IN[7:4] = (sw[1] && ~sw[2] && ~sw[3]) ? 3'b0110 : 			//Sets rover forwards or backwards
+				 (sw[2] && ~sw[3]) ? 3'b0101 : 						//Sets rover to go right if ON
+				 (sw[3]) ? 3'b1010 : 3'b1001 ;						//Sets rover to go left if ON
 
 endmodule
 //-----------------------------------------------------
@@ -109,22 +159,7 @@ module pwm(
 	reg [9:0] count,
 	reg [9:0] dutyCycle = 10'b0000000000 //In Case a larger Duty Variable is needed
 );
-always @ (duty)
-begin
-	case(duty)
-	3'b001: begin
-			dutyCycle = 10'b0011111010;
-			end
-	3'b010:	begin
-			dutyCycle = 10'b0111110100;
-			end
-	3'b011: begin
-			dutyCycle = 10'b1011101110;
-			end
-	3'b100: begin
-			dutyCycle = 10'b1111101000;
-			end
-	endcase
+
 			
 end
 	always @ (posedge clk) 
@@ -147,7 +182,7 @@ endmodule
 //-----------------------------------------------------
 module sevenSeg(
 	input clk,
-	input [1:0] JA,
+	input [1:0] JAI,
 	output reg [3:0] an,
 	output reg [6:0] seg,
 	input [7:0] sw

@@ -1,20 +1,18 @@
 module main(
+input clk,
 input pulse,
-output [7:0] JA,	//Not sure how to output signal to pmod. How many bits is it? What bus should it use?
-//input boolean variable from switches
+input [1:0] JAI,
+output [7:2] JA,
+input [7:0] sw
+reg rate
 );
-//Connect all the modules together here.
 
-//Set the frequency to 1KHz, as pwm doesn't affect motors speed if freq is higher.
-//not sure how, maybe a clock divider?
+//instaniate pwm with duty set be rate at 25khz.
+pwm freq(
+	.clk (clk),
+	.duty (duty),
+	.pulse (pulse)
+);
 
-//Control direction of current and motors here by detecting comparator signal and sending signal to input[1-4] on hbridge
-
-
-//Set the enables to pulse to change speed of motors/
-always @ (sw)
-
-assign JA[0] = pulse;		
-assign JA[1] = pulse;
 
 endmodule

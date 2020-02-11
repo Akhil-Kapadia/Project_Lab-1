@@ -1,64 +1,32 @@
-module switches(
-input [7:0] sw ,
-input [7:6] JA  ,	//PMOD for input to basys board.
-output reg [5:0] JA ,	//PMOD for output to basys board.
-output reg [7:0] disp1,	// output to 7seg.
-output reg [7:0] duty;
-)
+//-----------------------------------------------------
+//Module For Switches
+//-----------------------------------------------------
+module switch(
+input clk,
+input [7:0] sw,		//Switch states
+output [3:0] IN, 		//Sets the inputs of HBRidge -> Controls direction  of rover.
+output [1:0] EN,
+input [1:0] OC,
+output [13:0] duty,	//For use in case statement in pwm.v -  Will store how many switches toggled.
+input pulse
+);
+reg temp[3:0];	//Saves old IN bits.
 
-always @ (sw)
-//Switch case that uses sw[0-8].
-case (sw)	//Case statement might not be best here. Will find out Tuesday.
-	2b'000: //1st switch turns on motors, but we want to check the comparator signal first.
-		begin
-		//Control direction of current and motors here by detecting comparator signal and sending signal to input[1-4] on hbridge.
-			if (sw[0] == 1 && JA[7:6] == 1b'11 ) //Might change this so i don't always have to check JA
-				begin
-					assign JA[3:0] = 3b'1001;
-				end
-			else
-				begin
-					assign JA[3:0] = 1b'0000;
-				end
-		end
-	2b'001: //2nd switch. Reverse the current flow, change 7seg to display B (backwards).
-		begin
-			if (sw[1] == 1 && JA[7:6] == 1b'11)
-				begin
-					assign JA[3:0] = 3b'1001; //Forwards.
-				end
-			else
-				begin
-					assign JA[3:0] = 3b'0110; //Backwards
-				disp1 = 7'b0000000;	// Set 7seg display to "B"
-				end				
-		end
-	2b'010: //3rd Switch lowest pwm, slow motor speed. Set duty cycle here.
-		begin
-			if (
-		end
-	2b'011: //Increase pwm duty cycle to make motor faster.
-		begin
-			duty = d'80;
-		end
-	2b'100:
-		begin
-			duty = d'120;
-		end
-	2b'101:
-		begin
-			duty = d'160;
-		end
-	2b'110:
-		begin
-			duty = d'200;
-		end
-	2b'111:
-		begin
-			duty=d'255;
-		end
-	default:
-endcase
+// Turns rover on if switch is flipped and OC isnt 1.
+assign EN[1:0] = (|OC[1:0] && ~sw[0] ) ? 0 : pulse ; 				//Sets the EN to pulse if OC isnt 1 and 1st switch is ON 
 
+//Change the duty depending on how many switches toggled.
+
+assign duty = sw[7:4] << 10;
+000000001111 11110000000000
+
+//IN[0] == H-Bridge Input 1.
+//IN[1] == H-Bridge Input 2.
+//IN[2] == H-Bridge Input 3.
+//IN[3] == H-Bridge Input 4.
+
+assign IN[7:4] = (sw[1] && ~sw[2] && ~sw[3]) ? 3'b0110 : 			//Sets rover forwards or backwards
+				 (sw[2] && ~sw[3]) ? 3'b0101 : 						//Sets rover to go right if ON
+				 (sw[3]) ? 3'b1010 : 3'b1001 ;						//Sets rover to go left if ON
 
 endmodule
