@@ -1,5 +1,3 @@
-//Rovy The Best Rover
-
 //To-Test:
 // 1. Motor Control
 // 2. Left/Right movement
@@ -8,8 +6,8 @@
 
 //JA[] Signals
 //--------------
-//JA[0] Port  1 == Comparator A
-//JA[1] Port  2 == Comparator B
+//JA[0] Port  1 == Overcurrent A
+//JA[1] Port  2 == Overcurrent B
 //JA[2] Port  3 == Enable A
 //JA[3] Port  4 == Enable B
 //JA[4] Port  7 == H-Bridge Input 1
@@ -19,15 +17,15 @@
 //--------------
 //SW[] Signals
 //--------------
-//SW[0] == primaryEnable
-//SW[1] == Forward Enable
-//SW[2] == Backward Enable (If both 1 and 2 then disable until 1 or 2 is off)
-//SW[3] == Enable/Disable Display of Direction/Amps
-//SW[4] == Duty 25%
-//SW[5] == Duty 25%
-//SW[6] == Duty 25%
-//SW[7] == Duty 25%
-//Each of switches 4-7 adds 25% duty cycle
+//SW[0] == ON/OFF for entire rover.
+//SW[1] == [OFF] Set rover to go forwards. [ON] Set Rover to go backwards.
+//SW[2] == Toggled ON. Rover will begin turning RIGHT.
+//SW[3] == Toggled ON. Rover will begin turning LEFT.
+//SW[4] == Increase Duty by 25%
+//SW[5] == Increase Duty by 25%
+//SW[6] == Increase Duty by 25%
+//SW[7] == Increase Duty by 25%
+//			Switches [7:4] increase duty by 25% of full duty cycle value. (255)
 //'timescale 1ms/1ns
 
 
@@ -36,27 +34,36 @@
 //-----------------------------------------------------
 module main(
 input pulse,
-output reg [7:0] JA,
+input [1:0] JA,
+output [7:2] JA,
 input [7:0] sw
 );
 
-
-always @ (JA[0] || JA[1])
+//Turns rover on and off based on 1st switch
+always @ (JA[1:0])	//This is the same as {JA[1] || JA[0]), right?
 begin
-	if(sw[0]) //If Primary enable is on
+	if (~JA[0] && ~JA[1])	//If no Overcurrent detected.
 	begin
-		if(~JA[0] && ~JA[1]);//No comp signals
-		begin
-			JA[2] <= pulse;
-			JA[3] <= pulse;
-		end
-	if(~sw[0]) //Comp says over limit on at least one
-		begin
-			JA[2] <= 0;
-			JA[3] <= 0;
-		end
+		assign JA[3:2] = (JA[0]) ? pulse : 0 ;
 	end
+
+//	if(sw[0]) //If ON state.
+//	begin
+//		if(~JA[0] && ~JA[1]);//No comp signals
+//		begin
+//			JA[2] <= pulse;		//Enables A&B
+//			JA[3] <= pulse;
+//		end
+//	if(~sw[0]) //Turns off rover.
+//		begin
+//			JA[2] <= 0;			//Enables A&B
+//			JA[3] <= 0;
+//		end
+//	end
 end
+
+//Change the frequency to 1KHz so pwm signal makes noticable change in motor speeds.
+
 endmodule
 //-----------------------------------------------------
 //-----------------------------------------------------
@@ -67,43 +74,22 @@ endmodule
 //-----------------------------------------------------
 module switch(
 input [7:0] sw,
-output reg [7:4] JA, //Control of forward/back movement
-output reg [2:0] duty
+output [7:4] JA, //Sets the inputs of HBRidge -> Controls direction  of rover.
+output reg [2:0] rate	//For use in case statement in pwm.v -  Will store how many switches toggled.
 );
 
 //JA[4] == H-Bridge Input 1
-//JA[7] == H-Bridge Input 4
-//
-//JA[5] == H-Bridge Input 2
-//JA[6] == H-Bridge Input 3
+//JA[7] == H-Bridge Input 2
+//JA[5] == H-Bridge Input 3
+//JA[6] == H-Bridge Input 4
 
-always @ (sw[1] || sw[2])
+always @ (sw[7:1])
 begin
-	if(sw[1] && sw[2]); //Disable if both are on
-	begin
-		JA[2] <= 0;
-		JA[3] <= 0;
-	end
-	if(sw[1]); //Forwards movement
-	begin
-	   JA[7] <= 1;
-	   JA[6] <= 1;
-	   JA[5] <= 0;
-	   JA[4] <= 1;
-	end
-	if(sw[2]); //Backwards movement
-	begin
-	   JA[7] <= 0;
-	   JA[6] <= 1;
-	   JA[5] <= 1;
-	   JA[4] <= 0;
-	end
-end
-
-always @ (sw[4] || sw[5] || sw[6] || sw[7])
-begin
-	duty = sw[4] + sw[5] + sw[6] + sw[7];
+	assign JA[7:4] = (sw[1]) ? 3'b0110 : 3'b1001 ;	//Sets rover forwards or backwards
+	assign JA[7:4] = (sw[2]) ? 3'b0101 : 3'bxxxx ;	//Sets rover to go right if ON
+	assign JA[7:4] = (sw[3]) ? 3'b1010 : 3'bxxxx ;	//Sets rover to go left if ON
 	
+	rate = sw[4] + sw[5] + sw[6] + sw[7];
 end
 
 endmodule
@@ -118,7 +104,7 @@ endmodule
 
 module pwm(
 	input clk,
-	input [2:0] duty,
+	input [2:0] rate,
 	output reg pulse,
 	reg [9:0] count,
 	reg [9:0] dutyCycle = 10'b0000000000 //In Case a larger Duty Variable is needed
@@ -161,8 +147,7 @@ endmodule
 //-----------------------------------------------------
 module sevenSeg(
 	input clk,
-	input [7:0] amps [1:0],
-	output reg [1:0] JA,
+	input [1:0] JA,
 	output reg [3:0] an,
 	output reg [6:0] seg,
 	input [7:0] sw
@@ -176,53 +161,31 @@ assign refresh = count[18:17];//Refreshing Display
 
 always @(*)
 begin
-	if(sw[3])
-	begin
-		case(refresh)
-		2'b00:	begin // Displays 0/1 for current threshold
-					an = 4'b0111;
-					if(JA[0] || JA[1])
-						seg = 7'b1111001;
-					else
-						seg = 7'b1000000;
+	case(refresh)
+	2'b00:	begin //	Sets 7seg to display "1" or "0" depending if overcurrent detected.
+				seg = (JA[1:0]) ? 7'b1111001 : 7'b10000000
+			end
+	2'b01:  begin //Displays A for Amps
+				an = 4'b1011;
+                seg = 7'b0001000;
+			end
+	2'b10:  begin //Displays "F" or "b" for forwards of backwards movement
+				an = 4'b1101;
+				seg = (sw[1]) ? 7'b0000011 : 7'b00001110 ;
+			end
+	2'b11:  begin //Displays "r" and "L", for right and left movement.
+				an = 4'b1110;
+				if(sw[3:2])
+				begin
+					seg = (sw[2]) ? 7'b10011111 : 7'b10001111 ;
 				end
-		2'b01:  begin //Displays A for Amps
-					an = 4'b1011;
-                    seg = 7'b0001000;
+				else
+				begin
+					seg = 7'b11111111;
 				end
-		2'b10:  begin //Forward/Backward Movement
-					an = 4'b1101;
-					if(sw[1] && sw[2])
-						seg = 7'b0000000;
-					else if(sw[1])
-						seg = 7'b0001110;
-					else if(sw[2])
-						seg = 7'b0000011;
-					else
-						seg = 7'b0000000;
-				end
-		2'b11:  begin //Off Currently
-					an = 4'b1110;
-					seg = 7'b1111111;
-				end
-			endcase
-        end
-	end
+			end
+	endcase
+end
 endmodule
 //-----------------------------------------------------
 //-----------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
