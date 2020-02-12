@@ -10,14 +10,14 @@ module main(
 	input [7:0] sw
 );
 
-//instaniate pwm with duty set be rate at 25khz.
+//instantiate pwm with duty set be rate at 25khz.
 pwm freq(
 	.clk (clk),
 	.duty (duty),
 	.pulse (pulse)
 );
 
-switches flips(
+switch flips(
 	.clk (clk),
 	.sw (sw),
 	.IN (IN),
