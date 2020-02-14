@@ -22,7 +22,8 @@ always @(*)
 begin
 	case(refresh)
 	2'b00:	begin //	Sets 7seg to display "1" or "0" depending if overcurrent detected.
-				seg = (|OC[1:0]) ? 7'b1111001 : 7'b10000000 ;
+				an = 4'b0111;
+				seg = (|OC[1:0]) ? 7'b1111001 : 8'b10000000 ;
 			end
 	2'b01:  begin //Displays A for Amps
 				an = 4'b1011;
@@ -34,10 +35,9 @@ begin
 			end
 	2'b11:  begin //Displays "r" and "L", for right and left movement. Off if neither.
 				an = 4'b1110;
-				seg = (sw[2]) ? 7'b10011111 : 
-					  (sw[3]) ? 7'b10001111 :
-								7'b11111111 ;
-				
+				seg = (sw[2]) ? 8'b10011111 : 
+					  (sw[3]) ? 8'b10001111 :
+								8'b11111111 ;
 			end
 	endcase
 end
