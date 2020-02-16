@@ -15,7 +15,10 @@ input pulse
 assign EN[1:0] = (|OC[1:0] && ~sw[0] ) ? 0 : pulse ; 				//Sets the EN to pulse if OC isnt 1 and 1st switch is ON 
 
 //Change the duty depending on how many switches toggled.
-assign duty[11:0] = sw[7:4] << 8;
+assign duty[11:0] = (sw[7:4] == 4'b0001) ? 1024 :
+					(sw[7:4] == 4'b0011) ? : 2048
+					(sw[7:4] == 4'b0111) ? : 3072
+					(sw[7:4] == 4'b1111) ? 4095 : 128 ;
 
 //IN[0] == H-Bridge Input 1.
 //IN[1] == H-Bridge Input 2.
