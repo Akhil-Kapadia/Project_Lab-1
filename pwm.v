@@ -1,5 +1,5 @@
-module pwm(input clk, input [19:0] duty, output reg pulse = 0);
-	reg [19:0] count = 0;
+module pwm(input clk, input [11:0] duty, output reg pulse = 0);
+	reg [11:0] count = 0;
 	
 	always@(posedge clk)
 	begin

@@ -7,15 +7,19 @@ input [7:0] sw,		//Switch states
 output [3:0] IN , 		//Sets the inputs of HBRidge -> Controls direction  of rover.
 output [1:0] EN,
 input [1:0] OC,
-output [19:0] duty,	//For use in case statement in pwm.v -  Will store how many switches toggled.
+output [11:0] duty,	//For use in case statement in pwm.v -  Will store how many switches toggled.
 input pulse
 );
 
 // Turns rover on if switch is flipped and OC isnt 1.
-assign EN[1:0] = (|OC[1:0] && ~sw[0] ) ? 0 : {2{pulse}} ; 				//Sets the EN to pulse if OC isnt 1 and 1st switch is ON 
+assign EN[1:0] = (~sw[0]) ?       0 : 
+                 (OC[1]||OC[0]) ? 0 : {2{pulse}} ;
+
+//assign EN[0] = (~OC[0])  ? pulse : 0;				//Sets the EN to pulse if OC isnt 1 and 1st switch is ON 
+//assign EN[1] = (~OC[1])  ? pulse : 0;
 
 //Change the duty depending on how many switches toggled.
-assign duty[19:0] = sw[7:4] * 65535;
+assign duty[11:0] = sw[7:4] * 255; //65535;
 //assign duty[11:0] = (sw[7:4] == 4'b0001) ? 262144 :
 //					(sw[7:4] == 4'b0011) ? 26214*2 :
 //					(sw[7:4] == 4'b0111) ? 262144*3 :
