@@ -23,7 +23,7 @@ begin
 	case(refresh)
 	2'b00:	begin //	Sets 7seg to display "1" or "0" depending if overcurrent detected.
 				an = 4'b0111;
-				seg = (|OC[1:0]) ? 7'b1111001 : 7'b1000000 ;
+				seg = (OC[1]||OC[0]) ? 7'b1111001 : 7'b1000000 ;
 			end
 	2'b01:  begin //Displays A for Amps
 				an = 4'b1011;
