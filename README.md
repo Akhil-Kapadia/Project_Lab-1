@@ -1,44 +1,34 @@
-# Project_Lab-1
+```
+EE3331 Lab 1 Main Project Description
+```
+```
+Hardware Delivery System
+```
+The Lab 1 group main project is to build an autonomous hardware delivery system mounted on
+a Rover-5 tank chassis and controlled by a Basys-3 FPGA development board. The rover will follow a
+metallic tape path (1 ¼ to 1 ½ in wide) and deliver hardware components to a delivery box based on
+coded instruction given it on the path. The path will include at least one 90 degree turn. The path will
+have 5 stations as shown in Figure 1. The first station will be on the left side of the path and will use
+an infrared blinking light on the side of a 4x4 post, 4 inches off the ground to communicate to the rover
+which pieces of hardware to pick up and deliver. The next 3 stations will be on the right side of the
+path and will be color coded. Each will have different metal hardware (nut, bolt or washer) for the
+rover to pick up. The final station will have a box on the left side of the path for the rover to deposit
+the hardware. Each of the first 4 stations will have the hardware on top of a 4x4 post with the top of
+the post 5 inches from the ground. Be prepared for the rover to make multiple runs around the track
+with different deliver messages.
 
-Collabs: Akhil K., Alejadro H., Shawn I.
+```
+Figure 1. Layout for Hardware Delivery System
+```
+As mentioned, Station 1 will communicate to the rover which pieces of hardware to pick up and
+deliver. It will use different IR frequencies to communicate this. The following is a breakdown of the
+delivery messages:
 
-This is primarily only for the code we will develope in lab.
-As such, I have some rules to follow and will include instructions here.
+```
+200 Hz – Pick up from Red and Blue stations
+1 kHz – Pick up from Red and Green stations
+5 kHz – Pick up from Blue and Green stations
+```
 
-RULES:
-DO NOT DIRECTLY UPLOAD TO GITHUB! (Without asking first, this messes up git a lil bit)
-When making a commit, Make your comment informational, include changes to files commited.
 
 
-INSTRUCTIONS:
-
-Setting Up:
-1.	You'll need to create a username for git for when you commit things. Enter "git config --global user.name "Your name Here""
-2.	Either download Notepad++ (recommended) or enter this into terminal "git config core.editor notepad"
-
-Getting Started (1st time):
-1.	Goto an empty folder (ie "Project Lab 1")
-2.	Right click and select "Git bash Here"
-3.	Enter "git clone https://github.com/Akhil-Kapadia/Project_Lab-1.git" (Without "")
-4.	This will create the current repo in a new folder inside your project lab folder. Go ahead and close git, and open the "Project_Lab-1" folder. Right click and open git bash again.
-5.	You are now in the shared repo. Edit files here using Vivado or whatever.
-
-SAVING YOUR CHANGES:
-(Assuming git's already open in the repo) 
-1.	You'll need to "commit" the changes. What this does is it record the changes you've made. ie old file - new file = changes. This doesn't upload anything though, it just tells git what changes need to be uploaded. 
-MAKE SURE WHEN YOU COMMIT, COMMENT WHAT CHANGES YOU'VE MADE!
-Enter "git commit fileName.type"
-You can use "git status" to find out what files you've changed.
-2.	To actually save you changes to github you'll need to "push" the commit you've made. Be prepared, you might need to login in to github.
-Enter "git push"
-3.	Done!
-
-ADDING A FILE:
-1.	TO add a file to the repo:
-Enter "git add fileName.type"
-Then commit and push following tut above.
-
-FIND PAST VERSIONS:
-Goto the github repo and click on commits.
-
-Thats about it!
