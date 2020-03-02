@@ -13,14 +13,29 @@ input pulse,
 output reg reset
 );
 
+reg btnC_sync, btnC_last;
+initial
+    begin
+        reset <=0;
+        btnC_sync<=0;
+        btnC_last<=0;
+    end
 //Latch that sets value of reset which is used to store if OC has been tripped.
 always @ (posedge clk)
+begin
 	if(|OC[1:0])
 		reset <= 1;
+    btnC_sync<=btnC;        //D Flip Flop
+    btnC_last<=btnC_sync;
+    
+    // rising edge
+    if (btnC_sync && ~btnC_last)
+        reset<=0;
+end
 
-//sets reset to 0, if pb pressed.
-always @ (posedge btnC)
-	reset <= 0;
+////sets reset to 0, if pb pressed.
+//always @ (posedge btnC)
+//	reset <= 0;
 
 // Turns rover on if switch is flipped and OC isnt 1.
 assign EN[1:0] = (~sw[0]) ?       0 : 
