@@ -1,34 +1,34 @@
 module main(
 	input clk,
-	//input pulse,
-	//input [11:0] duty,
+	input [2:0] IPS,
 	output [3:0] an,
 	output [6:0] seg,
 	input [1:0] OC,
 	output [3:0] IN,
 	output [1:0] EN,
-	input [7:0] sw
+	input [7:0] sw,
+	input sw_ON
 );
 
-wire pulse;
-wire [11:0] duty;
+wire speed;
+wire [11:0] motor_duty = 1900;
 
 //instantiate pwm with duty set be rate at 25khz.
-pwm freq(
+pwm motors(
 	.clk (clk),
-	.duty (duty),
-	.pulse (pulse)
+	.duty (motor_duty),
+	.pulse (speed)
 );
 
-switch flips(
-	.clk (clk),
-	.sw (sw),
+IPS_sensors pathfinding(
+	.clk(clk),
+	.IPS (IPS),
 	.IN (IN),
 	.EN (EN),
-	.OC (OC),
-	.duty (duty),
-	.pulse (pulse)
+	.speed (speed),
+	.sw_ON (sw_ON)
 );
+
 
 sevenSeg disp(
 	.clk (clk),
