@@ -26,8 +26,9 @@ delivery messages:
 
 ```
 200 Hz – Pick up from Red and Blue stations
-1 kHz – Pick up from Red and Green stations
-5 kHz – Pick up from Blue and Green stations
+1 kHz  – Pick up from Red and Green stations
+5 kHz  – Pick up from Blue and Green stations
+30 kHz - Stop Running
 ```
 
 
