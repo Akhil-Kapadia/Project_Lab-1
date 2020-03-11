@@ -1,17 +1,17 @@
 module main(
 	input clk,
+	input [3:0] sw,
 	input [2:0] IPS,
 	output [3:0] an,
 	output [6:0] seg,
 	input [1:0] OC,
 	output [3:0] IN,
 	output [1:0] EN,
-	input [7:0] sw,
 	input sw_ON
 );
 
 wire speed;
-wire [11:0] motor_duty = 1900;
+wire [11:0] motor_duty = sw[3:0] * 255;
 
 //instantiate pwm with duty set be rate at 25khz.
 pwm motors(
