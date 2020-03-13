@@ -1,0 +1,9 @@
+module COLOR_sensor(
+input clk,
+input Color,
+);
+reg color;
+always @ (posedge clk)
+begin
+	
+end

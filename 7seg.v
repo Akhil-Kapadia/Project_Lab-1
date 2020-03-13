@@ -6,6 +6,7 @@
 //-----------------------------------------------------
 module sevenSeg(
 	input clk,
+	input IPS[2:0],
 	input [1:0] OC,
 	output reg [3:0] an,
 	output reg [6:0] seg,
@@ -27,7 +28,7 @@ begin
 			end
 	2'b01:  begin //Displays A for Amps
 				an = 4'b1011;
-                seg = 7'b0001000;
+                seg = (IPS[1]) ? 7'b0001000 : 7'b0000000;
 			end
 	2'b10:  begin //Displays "F" or "b" for forwards of backwards movement
 				an = 4'b1101;
