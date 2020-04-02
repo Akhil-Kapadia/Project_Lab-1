@@ -19,6 +19,7 @@ begin
 		SDA=0;
 		start=1; //Set state to start write to port.
 	end
+	+
 	
 	//
 end

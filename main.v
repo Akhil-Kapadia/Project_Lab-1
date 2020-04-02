@@ -3,13 +3,15 @@ module main(
 	input [3:0] sw,
 	input [2:0] IPS,
 	input [3:0] DIS,
+	input [1:0] OC,
+	input sw_ON,
+	input FREQ,
 	output [3:0] an,
 	output [6:0] seg,
-	input [1:0] OC,
 	output [3:0] IN,
 	output [1:0] EN,
-	output SERVO,
-	input sw_ON
+	output SERVO
+
 );
 
 wire speed;
@@ -17,7 +19,8 @@ wire [11:0] motor_duty = sw[3:0] * 255;
 wire SCL;
 wire s_pulse;
 
-//instantiate pwm with duty set be rate at 25khz.
+//Pwm for rovor motors use. Has a freq of 25Khz.mmn=M 
+
 pwm #(12,4095)
 motors(
 	.clk (clk),
@@ -25,7 +28,7 @@ motors(
 	.pulse (speed)
 );
 
-//PWM for servo motor use.
+//PWM for servo motor use. Has a freq of 50Hz.
 pwm #(21,2000000)
 servo_pwm(
 	.clk (clk),
@@ -79,6 +82,12 @@ servo servo_motor(
 	.s_pulse (s_pulse),
 	.s_duty (s_duty),
 	.SERVO (SERVO)
+);
+
+freq_counter color_freq(
+	.clk (clk),
+	.freq (FREQ),
+	.frequency (color_freq)
 );
 
 
