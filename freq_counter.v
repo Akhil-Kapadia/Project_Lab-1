@@ -30,9 +30,10 @@ begin
 	if (risingEdge)
 	begin
 		frequency <= count;
-//		count <= 0;
+		count <= 0;
 	end
-	count <= count + 1;
+	else
+	   count <= count + 1;
 end
 
 endmodule      

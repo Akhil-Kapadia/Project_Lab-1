@@ -1,17 +1,18 @@
 module testbench;
 
 reg clk;
-reg [15:0] duty = 32768;
+reg [15:0] duty = 8000;
 wire [15:0] color_freq;
-pwm #(16,15422)
+wire wave;
+pwm #(16,16000)
 freq_UUT(
 	.clk (clk),
 	.width (duty),
-	.pulse (pulse)
+	.pulse (wave)
 );
 freq_counter freq__counter_UUT(
 	.clk (clk),
-	.freq (pulse),
+	.freq (wave),
 	.frequency (color_freq)
 );
 
