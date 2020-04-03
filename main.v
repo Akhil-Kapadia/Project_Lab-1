@@ -20,7 +20,6 @@ wire SCL;
 wire s_pulse;
 
 //Pwm for rovor motors use. Has a freq of 25Khz.mmn=M 
-
 pwm #(12,4095)
 motors(
 	.clk (clk),
@@ -70,6 +69,7 @@ flag_handling flags(
 	.servo_flag (servo_flag)
 );
 
+//outputs a flag when sensors detect object to the sides of rover.
 Distance_sensor dist_stop(
 .DIS (DIS),
 .dist_flag (dist_flag)

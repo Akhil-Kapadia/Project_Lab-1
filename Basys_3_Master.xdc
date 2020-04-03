@@ -197,11 +197,11 @@ set_property PACKAGE_PIN K17 [get_ports {SERVO}]
 #set_property PACKAGE_PIN M19 [get_ports {JC[5]}]
 	#set_property IOSTANDARD LVCMOS33 [get_ports {JC[5]}]
 ##Sch name = JC9
-#set_property PACKAGE_PIN P17 [get_ports {JC[6]}]
-	#set_property IOSTANDARD LVCMOS33 [get_ports {JC[6]}]
+#set_property PACKAGE_PIN P17 [get_ports {CS[0]}]
+	#set_property IOSTANDARD LVCMOS33 [get_ports {CS[0]}]
 ##Sch name = JC10
-#set_property PACKAGE_PIN R18 [get_ports {JC[7]}]
-	#set_property IOSTANDARD LVCMOS33 [get_ports {JC[7]}]
+#set_property PACKAGE_PIN R18 [get_ports {CS[1]]
+	#set_property IOSTANDARD LVCMOS33 [get_ports {CS[1]}]
 
 
 ##Pmod Header JXADC
