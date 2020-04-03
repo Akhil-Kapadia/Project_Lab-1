@@ -2,21 +2,19 @@ module freq_counter(
 input clk,
 input freq,
 output reg [15:0] frequency
-);
+)
 //Local reg
 reg risingEdge;
 reg freq_last;
-reg [15:0] count;
 
 initial begin
 frequency <= 0;
-count <= 0;
 end
 
 //Latch to retain last value. Used in finding freq.
 always @ (posedge clk)
 begin
-	freq_last <= freq;
+	freq_last <= freq
 end
 
 //Dectects risingEdge of freq data stream.

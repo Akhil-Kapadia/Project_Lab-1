@@ -32,7 +32,7 @@ motors(
 pwm #(21,2000000)
 servo_pwm(
 	.clk (clk),
-	.width (s_duty),
+	.width (servo_duty),
 	.pulse (s_pulse)
 );
 
@@ -67,8 +67,7 @@ flag_handling flags(
     .pulse (speed),
     .dist_flag (dist_flag),
     .EN (EN),
-	.servo_flag (servo_flag),
-	.move_flag (move_flag)
+	.servo_flag (servo_flag)
 );
 
 Distance_sensor dist_stop(
@@ -82,8 +81,7 @@ servo servo_motor(
 	.servo_flag (servo_flag),
 	.s_pulse (s_pulse),
 	.s_duty (s_duty),
-	.SERVO (SERVO),
-	.move_flag(move_flag)
+	.SERVO (SERVO)
 );
 
 freq_counter color_freq(
