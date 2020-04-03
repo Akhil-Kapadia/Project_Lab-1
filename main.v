@@ -84,12 +84,47 @@ servo servo_motor(
 	.SERVO (SERVO)
 );
 
+//handles getting all the frequencies of R, G , B , Clear
 freq_counter color_freq(
 	.clk (clk),
 	.freq (FREQ),
 	.frequency (color_freq)
 );
 
+color_sensor colorSens(
+	.clk (clk),
+	.CS	(CS),
+	.frequency (FREQ),
+	.color (color),
+	.red (red),
+	.green (green),
+	.blue (blue),
+	.clear (clear)
+);
+
+//Divided red freq by clear to normalize red waveform.
+division (#16)red_div(
+	.clk (clk),
+	.dividend (clear),
+	.divisor (red),
+	.quotient (color)
+);
+
+//Divide green freq by clear to normalize green waveform.
+division (#16)green_div(
+	.clk (clk),
+	.dividend (clear),
+	.divisor (green),
+	.quotient (color)
+);
+
+//Divide blue freq by clear to normalize blue waveform.
+division (#16)red_div(
+	.clk (clk),
+	.dividend (clear),
+	.divisor (blue),
+	.quotient (color)
+);
 
 
 endmodule
