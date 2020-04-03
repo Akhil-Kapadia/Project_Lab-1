@@ -3,10 +3,10 @@ module division(clk, dividend, divisor, quotient);
 //Modular size of division.
 parameter WIDTH = 16;
 //	I/O ports
-input clk,
+input clk;
 input [WIDTH-1:0] dividend;	//Must be greater than divisor. Should be clear freq.
 input [WIDTH-1:0] divisor;	//Should be the color freqs
-output [WIDTH-1:0] quotient;
+output reg [WIDTH-1:0] quotient;
 //Internal regs
 reg [WIDTH-1:0] Res = 0;
 reg [WIDTH-1:0] a, b;

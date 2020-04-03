@@ -8,30 +8,33 @@ module color_sensor(
 	output reg [15:0] blue,
 	output reg [15:0] clear
 );
+//Internal regs
+reg [1:0] S;
+initial begin
+    S = 0;
+end
+assign CS = S;
 //Change the color coming in via CS.
 // RED		00	0
 // GREEN	01	1
 // BLUE		11	3
 // CLEAR	10	2
 
-always @ (frequency)
-begin
-	if (frequency != 0)
-	begin
-		CS <= CS +1;
-		if (CS == 0)
-			red <= frequency;
-		if (CS == 1)
-			green <= frequency;
-		if (CS == 3)
-			blue <= frequency;
-		if (CS == 2)
-		begin
-			clear <= frequency;
-		end
-	end
-end
-			
-			
-			
-		
+always @ (posedge clk)
+  begin
+  
+  //Sets the individual color frequencies to whatever its supposed to be.
+     if (frequency > 0)
+       begin
+          case (CS)
+            0: red <= frequency;
+            1: green <= frequency;
+            2: clear <= frequency;
+            3: blue <= frequency;
+          endcase
+          S <= S + 1;
+		  		  
+       end  
+  end		
+  
+endmodule	

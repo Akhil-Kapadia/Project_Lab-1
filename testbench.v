@@ -1,15 +1,20 @@
 module testbench;
 
 reg clk;
-wire duty = 100000;
-
-pwm #(21,2000000)
+reg [15:0] duty = 32768;
+wire [15:0] color_freq;
+pwm #(16,15422)
 freq_UUT(
 	.clk (clk),
 	.width (duty),
 	.pulse (pulse)
 );
- 
+freq_counter freq__counter_UUT(
+	.clk (clk),
+	.freq (pulse),
+	.frequency (color_freq)
+);
+
 	 initial begin
      // Initialize the clock to 0.
           clk = 0;

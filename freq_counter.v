@@ -4,7 +4,7 @@ input freq,
 output reg [15:0] frequency
 );
 //Local reg
-reg risingEdge;
+wire risingEdge;
 reg freq_last;
 reg [15:0] count;
 
@@ -19,11 +19,9 @@ begin
 	freq_last <= freq;
 end
 
-//Dectects risingEdge of freq data stream.
-always @ (posedge clk)
-begin
-	risingEdge = (freq && ~freq_last) ? 1 : 0;
-end
+//Detects risingEdge of freq data stream.
+assign risingEdge = freq & ~freq_last;
+
 
 //Now find the freq of the data stream by counting clock pulses.
 always @ (posedge clk)
@@ -32,7 +30,7 @@ begin
 	if (risingEdge)
 	begin
 		frequency <= count;
-		count <= 0;
+//		count <= 0;
 	end
 	count <= count + 1;
 end
