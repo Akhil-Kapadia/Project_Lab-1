@@ -9,9 +9,11 @@ wire risingEdge;
 reg freq_last;
 reg [15:0] count;
 reg start_count;
+reg [15:0] out;
 
 initial begin
 frequency <= 0;
+out <= 0;
 count <= 0;
 diode_change <=0;
 start_count <= 0;

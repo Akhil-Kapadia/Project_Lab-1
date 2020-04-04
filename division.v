@@ -13,7 +13,7 @@ reg [WIDTH-1:0] a, b;
 reg [WIDTH-1:0] p;
 integer i;
 
-always @ (dividend)
+always @ (divisor)
 begin
 	//Initialise variables
 	a=dividend;

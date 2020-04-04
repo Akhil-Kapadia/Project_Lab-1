@@ -1,7 +1,7 @@
 module color_sensor(
 	input clk,
 	input [1:0] CS,
-	input frequency,
+	input [15:0] frequency,
 	input red,
 	input green,
 	input blue,
@@ -25,13 +25,14 @@ assign CS = S;
 
 always @ (posedge clk)
   begin
-  
+	   red_raw <= frequency;  
   //Sets the individual color frequencies to whatever its supposed to be.
      if (diode_change)
        begin
+
           case (CS)
             0: begin
-					red_raw <= frequency;
+					//red_raw <= frequency;
 					S <= 2'b01;
 				end
             1: begin
