@@ -88,17 +88,21 @@ servo servo_motor(
 freq_counter color_freq(
 	.clk (clk),
 	.freq (FREQ),
-	.frequency (C_freq)
+	.frequency (C_freq),
+	.diode_change (diode_change)
 );
 
 color_sensor colorSens(
 	.clk (clk),
 	.CS	(CS),
-	.frequency (FREQ),
-	.color (color),
+	.frequency (C_freq),
 	.red (red),
 	.green (green),
 	.blue (blue),
+	.diode_change (diode_change),
+	.red_raw (red),
+	.green_raw (green),
+	.blue_raw (blue),
 	.clear (clear)
 );
 
@@ -106,24 +110,24 @@ color_sensor colorSens(
 division #(16)red_div(
 	.clk (clk),
 	.dividend (clear),
-	.divisor (red),
-	.quotient (color)
+	.divisor (red_raw),
+	.quotient (red)
 );
 
 //Divide green freq by clear to normalize green waveform.
 division #(16)green_div(
 	.clk (clk),
 	.dividend (clear),
-	.divisor (green),
-	.quotient (color)
+	.divisor (green_raw),
+	.quotient (green)
 );
 
 //Divide blue freq by clear to normalize blue waveform.
 division #(16)blue_div(
 	.clk (clk),
 	.dividend (clear),
-	.divisor (blue),
-	.quotient (color)
+	.divisor (blue_raw),
+	.quotient (blue)
 );
 
 
