@@ -36,6 +36,7 @@ begin
 	begin
 		frequency <= count;
 		count <= 0;
+		//Ensure that we always start counting from risingEdge to rising Edge.
 		diode_change <= start_count;
 		start_count <= start_count + 1;
 	end
