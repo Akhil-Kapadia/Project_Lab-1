@@ -1,43 +1,44 @@
 module testbench;
 
 reg clk;
-wire [15:0] color_freq;
+reg diode_change;
+reg [15:0] color_freq;
 wire wave;
 wire [1:0] port;
   
-pwm #(16,12346)
-red_freq_UUT(
-	.clk (clk),
-	.width (6173),
-	.pulse (pred)
-);
+//pwm #(16,12346)
+//red_freq_UUT(
+//	.clk (clk),
+//	.width (6173),
+//	.pulse (pred)
+//);
 
-pwm #(16,20000)
-green_freq_UUT(
-	.clk (clk),
-	.width (10000),
-	.pulse (pgreen)
-);
+//pwm #(16,20000)
+//green_freq_UUT(
+//	.clk (clk),
+//	.width (10000),
+//	.pulse (pgreen)
+//);
 
-pwm #(16, 35648)
-blue_freq_UUT(
-	.clk (clk),
-	.width (17824),
-	.pulse (pblue)
-);
+//pwm #(16, 35648)
+//blue_freq_UUT(
+//	.clk (clk),
+//	.width (17824),
+//	.pulse (pblue)
+//);
 
-pwm #(16,63000)
-clear_freq_UUT(
-	.clk (clk),
-	.width (31500),
-	.pulse (pclear)
-);
-freq_counter freq__counter_UUT(
-	.clk (clk),
-	.freq (wave),
-	.frequency (color_freq),
-	.diode_change (diode_change)
-);
+//pwm #(16,63000)
+//clear_freq_UUT(
+//	.clk (clk),
+//	.width (31500),
+//	.pulse (pclear)
+//);
+//freq_counter freq__counter_UUT(
+//	.clk (clk),
+//	.freq (wave),
+//	.frequency (color_freq),
+//	.diode_change (diode_change)
+//);
 
 
 color_sensor colorSens_UUT(
@@ -77,11 +78,20 @@ division #(16)blue_div_UUT(
 	.divisor (blue_raw),
 	.quotient (blue)
 );
-assign wave = (port == 0) ? pred : 
-              (port == 1) ? pgreen :
-              (port == 2) ? pclear : pblue;
+//assign wave = (port == 0) ? pred : 
+//              (port == 1) ? pgreen :
+//              (port == 2) ? pclear : pblue;
   
-   
+initial begin
+    diode_change= 1;
+    color_freq = 32000;
+    #5 diode_change =0;
+    #100 color_freq = 12434;
+    diode_change = 1;
+    # 5 diode_change = 0;
+    #100 color_freq = 41200;
+    diode_change = 1;
+end
 	 initial begin
      // Initialize the clock to 0.
           clk = 0;
