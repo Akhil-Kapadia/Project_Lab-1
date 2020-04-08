@@ -28,8 +28,7 @@ assign CS = S;
 // CLEAR	10	2
 
 always @ (posedge clk)
-  begin
-	 //  red_raw <= frequency;  
+  begin  
   //Sets the individual color frequencies to whatever its supposed to be.
      if (diode_change)
        begin

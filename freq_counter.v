@@ -12,7 +12,7 @@ reg start_count;
 reg [15:0] out;
 
 initial begin
-frequency <= 0;
+frequency <= 1;
 out <= 0;
 count <= 0;
 diode_change <=0;
@@ -34,7 +34,7 @@ begin
 	//If posedge of freq is found, output # of clock pulses as freq and reset it.
 	if (risingEdge)
 	begin
-		frequency <= count;
+		frequency <= (count>0) ? count : frequency;
 		count <= 0;
 		//Ensure that we always start counting from risingEdge to rising Edge.
 		diode_change <= start_count;
