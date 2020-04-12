@@ -92,42 +92,28 @@ freq_counter color_freq(
 	.diode_change (diode_change)
 );
 
-color_sensor colorSens(
+color_sensor RGB_det(
 	.clk (clk),
-	.CS	(CS),
-	.frequency (C_freq),
-	.red (red),
-	.green (green),
-	.blue (blue),
+	.CS	(port),
+	.frequency (color_freq),
+	.color (color),
+	.calc_done (normalizer_Done),
 	.diode_change (diode_change),
-	.red_raw (red),
-	.green_raw (green),
-	.blue_raw (blue),
+	.calc_EN (normailizer_EN),
+	.calc_reset (normailizer_reset),
+	.color_raw (color_raw),
 	.clear (clear)
 );
 
-//Divided red freq by clear to normalize red waveform.
-division #(16)red_div(
+//Find the percentage of clear compared to color.
+calc_perc normailizer(
 	.clk (clk),
-	.dividend (clear),
-	.divisor (red_raw),
-	.quotient (red)
-);
-
-//Divide green freq by clear to normalize green waveform.
-division #(16)green_div(
-	.clk (clk),
-	.dividend (clear),
-	.divisor (green_raw),
-	.quotient (green)
-);
-
-//Divide blue freq by clear to normalize blue waveform.
-division #(16)blue_div(
-	.clk (clk),
-	.dividend (clear),
-	.divisor (blue_raw),
-	.quotient (blue)
+	.reset (0),
+	.numerator (color_raw),
+	.denominator (clear),
+	.enable (normailizer_EN),
+	.done (normailizer_Done),
+	.percent (color)
 );
 
 
