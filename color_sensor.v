@@ -40,19 +40,20 @@ always @ (posedge clk)
   //Sets the individual color frequencies to whatever its supposed to be.
      if (diode_change)
        begin
-	   calc_reset <= 1;
-	   calc_EN <= 0;
           case (S)
             0: begin	//Red color	%
 					color_raw <= frequency;
+					//Start calculation of clear/color_raw
 					calc_EN <= 1;
 					calc_reset <= 0;
 					wait(calc_done)
 					begin
+						//Calculation finished, Take quotient and put it in red. The reset calc.
 					    red <= color;
+						calc_EN <= 0;
+						calc_reset <= 1;
 					end
-					//red <= (color != 0) ? color : red;
-				    $display("Red Color is %d", red);
+					//Finally change the diode we are reading.
 					S <= 2'b01;
 				end
             1: begin	// Green color %
@@ -62,6 +63,8 @@ always @ (posedge clk)
 					wait(calc_done)
 					begin 
 						green <= color;
+						calc_EN <= 0;
+						calc_reset <= 1;
 					end
 					S <= 2'b11;
 				end
@@ -76,11 +79,14 @@ always @ (posedge clk)
 					wait(calc_done)
 					begin
 						blue <= color;
+						calc_EN <= 0;
+						calc_reset <= 1;
 					end
 					S <= 2'b10;
 				end
           endcase
        end  
+       
        //Compare Colors to see which is more prominent.  
        if((red !=0) || (blue != 0) || (green !=0))
             color_detected <= 1;
