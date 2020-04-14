@@ -38,54 +38,60 @@ always @ (posedge clk)
   //Resets the perc calc to ensure clean calculation.
 
   //Sets the individual color frequencies to whatever its supposed to be.
-     if (diode_change)
-       begin
           case (S)
             0: begin	//Red color	%
-					color_raw <= frequency;
-					//Start calculation of clear/color_raw
-					calc_EN <= 1;
-					calc_reset <= 0;
-					wait(calc_done)
+					if(diode_change)
 					begin
-						//Calculation finished, Take quotient and put it in red. The reset calc.
-					    red <= color;
-						calc_EN <= 0;
-						calc_reset <= 1;
+						color_raw <= frequency;		//set reg to be outputed to normalizer to input from freq_counter
+						calc_EN <= 1;				//Start calculations
+						calc_reset <= 0;
 					end
-					//Finally change the diode we are reading.
-					S <= 2'b01;
+					if(calc_done)
+					begin
+					    red <= color;					//store value in local reg
+						calc_EN <= 0;					// Disable calculation
+						calc_reset <= 1;				//Reset calculations.
+						S <= (diode_change) ? 2'b01 : S;	//Change the diode if its time to.
+					end
 				end
             1: begin	// Green color %
-					color_raw <= frequency;
-					calc_EN <= 1;
-					calc_reset <= 0;
-					wait(calc_done)
-					begin 
-						green <= color;
-						calc_EN <= 0;
-						calc_reset <= 1;
+					if(diode_change)
+					begin
+						color_raw <= frequency;		//set reg to be outputed to normalizer to input from freq_counter
+						calc_EN <= 1;				//Start calculations
+						calc_reset <= 0;
 					end
-					S <= 2'b11;
+					if(calc_done)
+					begin
+					    green <= color;					//store value in local reg
+						calc_EN <= 0;					// Disable calculation
+						calc_reset <= 1;				//Reset calculations.
+						S <= (diode_change) ? 2'b011 : S;	//Change the diode if its time to.
+					end
 				end
             2: begin    //Always get clear first before other colors.
-					clear <= frequency;
-					S <= 2'b00;
+					if(diode_change)
+					begin
+						clear <= frequency;
+						S <= 2'b00;
+					end
 				end
             3: begin    //Blue Color %
-					color_raw <= frequency;
-					calc_EN <= 1;
-					calc_reset <= 0;
-					wait(calc_done)
+					if(diode_change)
 					begin
-						blue <= color;
-						calc_EN <= 0;
-						calc_reset <= 1;
+						color_raw <= frequency;		//set reg to be outputed to normalizer to input from freq_counter
+						calc_EN <= 1;				//Start calculations
+						calc_reset <= 0;
 					end
-					S <= 2'b10;
+					if(calc_done)
+					begin
+					    red <= color;					//store value in local reg
+						calc_EN <= 0;					// Disable calculation
+						calc_reset <= 1;				//Reset calculations.
+						S <= (diode_change) ? 2'b010 : S;	//Change the diode if its time to.
+					end
 				end
           endcase
-       end  
        
        //Compare Colors to see which is more prominent.  
        if((red !=0) || (blue != 0) || (green !=0))
