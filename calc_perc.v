@@ -4,7 +4,8 @@
 // ===========================================================================
 // Based on a module Nutter showed to Rice Rodriguez and then showed to me.
 //Changes made: Changed Bit sizes to accomadate my needs.
-module calc_perc(
+module calc_perc   
+(
      input clk,
      input reset,
      input [15:0] numerator,

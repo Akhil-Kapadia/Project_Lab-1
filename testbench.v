@@ -69,7 +69,6 @@ calc_perc normailizer(
 	.done (normalizer_Done),
 	.percent (color)
 );
-wire color;
 
 //Divided red freq by clear to normalize red waveform.
 assign wave = (port == 0) ? pred : 

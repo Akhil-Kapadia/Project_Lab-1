@@ -29,4 +29,5 @@ module division(A,B,Res);
                 a1[0] = 1;
         end
         Res = a1;   
-    end 
+    end
+endmodule
