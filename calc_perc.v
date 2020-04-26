@@ -12,11 +12,11 @@ module calc_perc
      input [15:0] denominator,
      input enable,
      output reg done = 0,
-     output reg [15:0] percent = 0
+     output reg [7:0] percent = 0
 );
      reg [7:0] final_per = 0;
      reg [1:0] state = 0;
-     // 14 bits because (255*100)/2 = 12750 needs at least 14 bits
+     // 22 bits because (16^*100)/2  needs at least 22 bits
      reg [22:0] sum = 0;
      parameter start       = 0,
                calculating = 1,

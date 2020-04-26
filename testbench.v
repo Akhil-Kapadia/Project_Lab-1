@@ -4,19 +4,19 @@ reg clk;
 wire [15:0] color_freq;
 wire [15:0] color_raw;
 wire [15:0] clear;
-wire [15:0] color;
+wire [7:0] color;
 wire [2:0] color_detected;
 wire wave;
 wire [1:0] port;
   
-pwm #(16,7340)
+pwm #(16,10850)
 red_freq_UUT(
-	.clk (clk),
-	.width (100),
+	.clk (clk), 
+	.width (100),  
 	.pulse (pred)
 );
 
-pwm #(16,20000)
+pwm #(16,30000)
 green_freq_UUT(
 	.clk (clk),
 	.width (100),
@@ -30,7 +30,7 @@ blue_freq_UUT(
 	.pulse (pblue)
 );
 
-pwm #(16,2810)
+pwm #(16,3790)
 clear_freq_UUT(
 	.clk (clk),
 	.width (100),
@@ -69,6 +69,7 @@ calc_perc normailizer(
 	.done (normalizer_Done),
 	.percent (color)
 );
+wire color;
 
 //Divided red freq by clear to normalize red waveform.
 assign wave = (port == 0) ? pred : 
