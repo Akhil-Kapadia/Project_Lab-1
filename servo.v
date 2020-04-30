@@ -4,11 +4,14 @@ input servo_flag,
 output MAGNET,
 output reg [18:0] s_duty,
 output reg move_flag,
-output SERVO
+output SERVO,
+input s_pulse
 );
 
 //Count used for increment
 reg [9:0] count = 0;
+
+assign SERVO = s_pulse;
 
 //move_flag_reset used for pulse extension
 reg move_flag_reset = 0;

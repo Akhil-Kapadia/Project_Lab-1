@@ -1,3 +1,16 @@
+/*
+Filename : Main.v
+
+Description : This module instantiates all other modules for this project. It 
+also connects all modules together properly. Modules that need to be added for
+functionality: pwm, main_state_Machine, IPS_sensors, IR_instructions, 
+color_sensor, freq_counter, calc_perc, distance_sensors, 7seg, and servo.
+
+Author : Akhil Kapadia
+
+Last updated : 4/29/2020.
+*/
+
 module main(
 	input clk,
 	input [3:0] sw,
@@ -71,16 +84,19 @@ flag_handling main_stateMachine(
 	.pulse (speed),
 	.EN (EN),
 	.dist_state (dist_state),
-	.IR_state (2'b01),
+	.proximity (proximity),
+	.IR_state (2'b10),
 	.servo_done (servo_done),
 	.servo_state (servo_state),
-	.servo_EN (servo_EN),
+	//.servo_EN (servo_EN),
 	.state (MSM_state)
 );
 
 //outputs a flag when sensors detect object to the sides of rover.
 Distance_sensor distance_stateMachine(
+.clk (clk),
 .DIS (DIS),
+.proximity (proximity),
 .dist_state (dist_state)
 );
 
@@ -99,6 +115,7 @@ servo servo_stateMachine(
 	.clk (clk),
 	.servo_flag (servo_state),
 	.s_duty (s_duty),
+	.s_pulse (s_pulse),
 	.move_flag (servo_done),
 	.SERVO (SERVO),
 	.MAGNET (MAGNET)
