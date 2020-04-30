@@ -1,15 +1,15 @@
 module freq_counter(
 input clk,
 input freq,
-output reg [15:0] frequency,
+output reg [18:0] frequency,
 output reg diode_change
 );
 //Local reg
 wire risingEdge;
 reg freq_last;
-reg [15:0] count;
+reg [18:0] count;
 reg start_count;
-reg [15:0] out;
+reg [18:0] out;
 
 initial begin
 frequency <= 1;
@@ -45,8 +45,7 @@ begin
 		if(start_count)
 			count <= count + 1;
 		diode_change <= 0;
-	end
-	
+	end	
 end
 
 endmodule      

@@ -12,19 +12,20 @@ module main(
 	output [1:0] EN,
 	output [1:0] CS,
 	output SERVO,
-	output MANGET
-
+	output MAGNET
 );
 
 wire speed;	//For rover use. Sent to main_stateMachine
 wire [11:0] motor_duty = sw[3:0] * 255;	//For rover use. pwm
 wire s_pulse;	//For servo. Sent to servo_stateMachine
-wire [15:0] period;	//Frequency/period from color sensor. freq_counter to color_sensor.
-wire [15:0] clear;  //Period of clear filter of photodiode from color sensor.
+wire [18:0] s_duty;
+wire [18:0] period;	//Frequency/period from color sensor. freq_counter to color_sensor.
+wire [18:0] clear;  //Period of clear filter of photodiode from color sensor.
 wire [7:0] RGB_percentage;	//color/clear from calc_perc to color_sensor.
-wire [15:0] color_period;	//Period from color_stateMachine to normalizer.
+wire [18:0] color_period;	//Period from color_stateMachine to normalizer.
 wire [2:0] color_state;		//Corresponds to the color detected. [0] : Red, [1] : Green, [2] : Blue.
-wire [1:0] servo_state;		//Controls positions of servo arm.
+wire  servo_state;	     	//Controls positions of servo arm.
+wire [1:0] dist_state;      //Which side detected station. 
 wire [1:0] MSM_state;
 wire [2:0] IR_state;
 
@@ -65,12 +66,11 @@ sevenSeg disp(
 flag_handling main_stateMachine(
 	.clk (clk),
 	.sw_ON (sw_on),
-	.pulse (pulse),
-	.dist_state (dist_state),
-	.IR_state (IR_state),
-	.servo_state (servo_state),
-	.magnet_state (magnet_state),
+	.pulse (speed),
 	.EN (EN),
+	.dist_state (dist_state),
+	.IR_state (2'b01),
+	.servo_done (servo_done),
 	.state (MSM_state)
 );
 
@@ -94,9 +94,9 @@ IR_instructions IR_stateMachine(
 servo servo_stateMachine(
 	.clk (clk),
 	.servo_flag (servo_flag),
-	.s_pulse (s_pulse),
 	.s_duty (s_duty),
-	.SERVO (SERVO)
+	.SERVO (SERVO),
+	.MAGNET (MAGNET)
 );
 
 //handles getting all the frequencies of R, G , B , Clear

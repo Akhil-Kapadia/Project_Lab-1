@@ -1,14 +1,14 @@
 module color_sensor(
 	input clk,
-	input [15:0] frequency,
+	input [18:0] frequency,
 	input [7:0] color,
 	input calc_done,
 	input diode_change,
 	output [1:0] CS,
 	output reg calc_EN,
 	output reg calc_reset,
-	output reg [15:0] clear,
-	output reg [15:0] color_raw,
+	output reg [18:0] clear,
+	output reg [18:0] color_raw,
 	output reg [2:0] color_detected
 );      
 //Internal regs
@@ -34,7 +34,6 @@ assign CS = S;
 
 always @ (posedge clk)
   begin  
-  color_detected <= color;
   //Sets the individual color frequencies to whatever its supposed to be.
     if(diode_change)
 		  case (S)

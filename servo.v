@@ -1,10 +1,10 @@
 module servo(
 input clk,
-input [1:0] servo_flag,
-input s_pulse,
+input servo_flag,
+output MAGNET,
 output reg [18:0] s_duty,
-output SERVO,
-output reg move_flag
+output reg move_flag,
+output SERVO
 );
 
 //Count used for increment
@@ -12,16 +12,40 @@ reg [9:0] count = 0;
 
 //move_flag_reset used for pulse extension
 reg move_flag_reset = 0;
+reg [1:0] mode;
+reg [1:0] servoFlag;
+reg magnetEnable;
+reg moveFlag;
+reg enableServo;
+reg servoFlagPrev;
 
-always @ (posedge clk)
+assign MAGNET = magnetEnable;
+
+always @(posedge clk)
 begin
-	//Count used to slow down Servo
-    count = count +1;
 
-	//Resets move flag back to 0 after a clock pulses pass
-	if(move_flag == 1)
+	if(servoFlagPrev == servo_flag)
 	begin
-		if(move_flag_reset == 1)
+		servoFlagPrev = servo_flag;
+	end
+	else
+	begin
+		servoFlagPrev = servo_flag;
+		enableServo = 1;
+		if(servo_flag)
+		begin
+			mode = 2'b10;
+		end
+		else
+		begin
+			mode = 2'b01;
+		end
+	end
+	
+	//Resets move flag back to 0 after a clock pulse pass
+	if(move_flag == 1)
+	begin		
+	if(move_flag_reset == 1)
 		begin
 			move_flag = 0;
 			move_flag_reset = 0;
@@ -29,40 +53,91 @@ begin
 		else
 			move_flag_reset = 1;
 	end
-	
-	//Servo Movement
-	//Count used to slow down motor
-	//Move_Flag used to prevent movement of Servo until move_flag has been read
-	if(count == 0 && move_flag == 0)
+
+	if(enableServo)
 	begin
-		case (servo_flag)
-			2'b00://To 90
+		//Count used to slow down Servo
+		count = count + 1;
+	
+		//Mode used to change the servo + magnet pair
+		case(mode)
+			2'b01://DropOff
 			begin
-				if (s_duty < 164500 || s_duty > 165500)
+				if(~moveFlag)
 				begin
-					if(s_duty < 165000)
-						s_duty = s_duty + 1;
-					if(s_duty > 165000)
-						s_duty = s_duty -1;
+					magnetEnable = 1;
+					servoFlag = 2'b10;
 				end
-				else 
-					move_flag = 1;
+				else
+				begin
+					moveFlag = 0;
+					magnetEnable = 0;
+					mode = 2'b00;
+				end
 			end
-			2'b01: //To 0
+			2'b10://PickUp
 			begin
-				if (s_duty > 72000)
-					s_duty = s_duty -1;
-				else 
-					move_flag = 1;
+				if(~moveFlag)
+				begin
+					magnetEnable = 1;
+					servoFlag = 2'b01;
+				end
+				else
+				begin
+					moveFlag = 0;
+					mode = 2'b00;
+				end
 			end
-			2'b10: //To 180
-		  begin
-				if (s_duty < 253000)
-					s_duty = s_duty + 1;
-				else 
-					move_flag = 1;
+			2'b00://Back To Neutral
+			begin
+				if(~moveFlag)
+					servoFlag = 2'b00;
+				else
+				begin
+					moveFlag = 0;
+					magnetEnable = 0;
+					enableServo = 0;
+				end
 			end
 		endcase
+	
+
+		//Same servo movement
+		if(count == 0 && enableServo)
+		begin
+			case(servoFlag)
+				2'b00: //To Neutral (90)
+				begin
+					if (s_duty < 164500 || s_duty > 165500)
+					begin
+						if(s_duty < 165000)
+							s_duty = s_duty + 1;
+						if(s_duty > 165000)
+							s_duty = s_duty -1;
+					end
+					else 
+					begin
+						move_flag = 1;
+						moveFlag = 1;
+					end
+				end
+				2'b01: //To Pickup (0)
+				begin
+					if (s_duty > 72000)
+						s_duty = s_duty -1;
+					else 
+						moveFlag = 1;
+				end
+				2'b10: //To Dropoff (180)
+				begin
+					if (s_duty < 253000)
+						s_duty = s_duty + 1;
+					else 
+						moveFlag = 1;
+				end
+			endcase
+		end
 	end
 end
 endmodule
+

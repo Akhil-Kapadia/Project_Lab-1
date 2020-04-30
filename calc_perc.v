@@ -8,15 +8,15 @@ module calc_perc
 (
      input clk,
      input reset,
-     input [15:0] numerator,
-     input [15:0] denominator,
+     input [18:0] numerator,
+     input [18:0] denominator,
      input enable,
      output reg done = 0,
      output reg [7:0] percent = 0
 );
      reg [7:0] final_per = 0;
      reg [1:0] state = 0;
-     // 22 bits because (16^*100)/2  needs at least 22 bits
+     // 22 bits because (18^*100)/2  needs at least 22 bits
      reg [22:0] sum = 0;
      parameter start       = 0,
                calculating = 1,

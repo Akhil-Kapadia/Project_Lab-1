@@ -4,7 +4,7 @@ module IR_instructions(
 	input [2:0] color,
 	output reg [2:0] IR_state
 );
-reg instruction;
+reg [1:0] instruction;
 always @ (posedge clk)
 begin
 
