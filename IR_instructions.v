@@ -2,7 +2,7 @@ module IR_instructions(
 	input clk,
 	input [3:0] IR,
 	input [2:0] color,
-	output reg [2:0] IR_state
+	output reg [1:0] IR_state
 );
 reg [1:0] instruction;
 always @ (posedge clk)
@@ -17,7 +17,7 @@ begin
 	endcase
 	
 	case(instruction)
-		2'b00: IR_state <= 0;		//Send stop state.
+		2'b00: IR_state <= 2'b00;		//Send stop state.
 		2'b01: IR_state[0] <= (color[0] || color[2]);	//If color detected is red or blue start pickup. 
 		2'b10: IR_state[0] <= (color[0] || color[1]);	//If color detected is red or green, pick up.
 		2'b11: IR_state[0] <= (color[2]  || color[1]);//If color detected is blue or green, pickup.

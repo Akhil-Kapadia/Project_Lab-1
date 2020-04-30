@@ -29,7 +29,7 @@ wire servo_state;           //Pick up or drop off mode of servo arm
 wire servo_done;            //servo done .
 wire [1:0] dist_state;      //Which side detected station. 
 wire [1:0] MSM_state;
-wire [2:0] IR_state;
+wire [1:0] IR_state;
 
 //Pwm for rovor motors use. Has a freq of 25Khz.
 pwm #(12,4095)

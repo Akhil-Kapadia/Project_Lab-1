@@ -3,7 +3,7 @@ input clk,
 input sw_ON,
 input pulse,
 input [1:0] dist_state,
-input [2:0] IR_state,
+input [1:0] IR_state,
 input servo_done,
 output reg servo_state,
 output reg servo_EN,
@@ -28,8 +28,10 @@ begin
 		begin
 			enable <= 0;	//Stops rover
 			servo_EN <= 0;
-			state <= (IR_state[0]) ? 2 :		//Pick up at station.
-					 (IR_state[0]) ? 3 : 0;	//Drop of at station. ! If not then continue. 
+			case(dist_state[1:0])
+			2'b01 : state <= (IR_state[0]) ? 2 : 0;
+			2'b10 : state <= 3;
+			endcase 
 		end
 		2://Pick up from stations.
 		begin
