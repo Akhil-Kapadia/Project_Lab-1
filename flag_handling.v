@@ -22,15 +22,14 @@ begin
 		begin
 			enable <= (sw_ON && IR_state[1]);	//Set Enables to pulse.
 			servo_EN <= 0;
-			move <= (|dist_state[1:0]);
+			move <= (|dist_state) ? move : 0;
 		end
 		1://Stops rover at station and checks for color.
-		
 		begin
 			enable <= 0;	//Stops rover
 			servo_EN <= 0;
 			state <= (IR_state[0]) ? 2 :		//Pick up at station.
-					 (IR_state[1]) ? 3 : 0;	//Drop of at station.
+					 (IR_state[0]) ? 3 : 0;	//Drop of at station. ! If not then continue. 
 		end
 		2://Pick up from stations.
 		begin
