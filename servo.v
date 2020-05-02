@@ -14,13 +14,13 @@ reg [9:0] count = 0;
 assign SERVO = s_pulse;
 
 //move_flag_reset used for pulse extension
-reg move_flag_reset = 0;
+reg [1:0] move_flag_reset = 0;
 reg [1:0] mode;
 reg [1:0] servoFlag;
 reg magnetEnable;
 reg moveFlag;
 reg enableServo;
-reg servoFlagPrev;
+reg servoFlagPrev = 0;
 
 assign MAGNET = magnetEnable;
 
@@ -48,13 +48,13 @@ begin
 	//Resets move flag back to 0 after a clock pulse pass
 	if(move_flag == 1)
 	begin		
-	if(move_flag_reset == 1)
+	if(move_flag_reset == 3)
 		begin
 			move_flag = 0;
 			move_flag_reset = 0;
 		end
 		else
-			move_flag_reset = 1;
+			move_flag_reset = move_flag_reset + 1;
 	end
 
 	if(enableServo)

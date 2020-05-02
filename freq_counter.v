@@ -1,15 +1,3 @@
-/*
--------------------------------------------------------
-Freq_counter  Module
--------------------------------------------------------
-Given a square wave, this module will find the period using a 10ns clock.
-It does this by detecting the rising edge of the input square wave (Read: FREQ)
-and counting each time the 10ns clk pulses. Once another rising edge is detected,
-it sends the count to an output and resets.
--------------------------------------------------------
-Author : Akhil Kapadia
--------------------------------------------------------
-*/
 module freq_counter(
 input clk,
 input freq,
