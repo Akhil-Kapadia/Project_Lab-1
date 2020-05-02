@@ -17,7 +17,7 @@ module calc_perc
      reg [7:0] final_per = 0;
      reg [1:0] state = 0;
      // 22 bits because (18^*100)/2  needs at least 22 bits
-     reg [22:0] sum = 0;
+     reg [23:0] sum = 0;
      parameter start       = 0,
                calculating = 1,
                finish      = 2;

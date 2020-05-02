@@ -13,11 +13,11 @@ Last updated : 4/29/2020.
 
 module main(
 	input clk,
-	input [3:0] sw,
+	input [6:0] sw,
 	input [3:0] IR,
 	input [2:0] IPS,
 	input [3:0] DIS,
-	input [1:0] OC,
+	input OC,
 	input sw_ON,
 	input FREQ,
 	output [3:0] an,
@@ -43,6 +43,7 @@ wire servo_done;            //servo done .
 wire [1:0] dist_state;      //Which side detected station. 
 wire [1:0] MSM_state;
 wire [1:0] IR_state;
+wire [1:0] proximity;
 
 //Pwm for rovor motors use. Has a freq of 25Khz.
 pwm #(12,4095)
@@ -67,6 +68,7 @@ IPS_sensors pathfinding(
 	.IN (IN)
 );
 
+//displays state of rover
 sevenSeg disp(
 	.clk (clk),
 	.an (an),
@@ -85,7 +87,7 @@ flag_handling main_stateMachine(
 	.EN (EN),
 	.dist_state (dist_state),
 	.proximity (proximity),
-	.IR_state (2'b10),
+	.IR_state (IR_state),
 	.servo_done (servo_done),
 	.servo_state (servo_state),
 	//.servo_EN (servo_EN),
@@ -129,20 +131,27 @@ freq_counter frequency_Counter(
 	.diode_change (diode_change)
 );
 
-//Given the period of the 4 color diodes, returns which color is most prominent.
-color_sensor color_stateMachine(
+planB altColor(
 	.clk (clk),
-	.frequency (period),
-	.color (RGB_percentage),
-	.calc_done (normalizer_done),
-	.diode_change (diode_change),
-	.CS	(CS),
-	.calc_EN (normalizer_EN),
-	.calc_reset (normalizer_reset),
-	.clear (clear),
-	.color_raw (color_period),
-	.color_detected (color_state)
+	.sw (sw[6:4]),
+	.proximity (proximity[0]),
+	.color (color_state)
 );
+
+//Given the period of the 4 color diodes, returns which color is most prominent.
+//color_sensor color_stateMachine(
+	//.clk (clk),
+	//.frequency (period),
+	//.color (RGB_percentage),
+	//.calc_done (normalizer_done),
+	//.diode_change (diode_change),
+	//.CS	(CS),
+	//.calc_EN (normalizer_EN),
+	//.calc_reset (normalizer_reset),
+	//.clear (clear),
+	//.color_raw (color_period),
+	//.color_detected (color_state)
+//);
 
 //Find the percentage of clear compared to color.
 calc_perc normalizer(

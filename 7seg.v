@@ -48,9 +48,7 @@ begin
 				default: seg = 7'b0101011;	// "n"
 				endcase
 			end
-	2'b01:  begin //Displays which IR signal we are getting.
-	
-	
+	2'b01:  begin //Displays which IR signal we are getting.	
 				an = 4'b1011;
                 seg = 7'b1111111;
                 case(IR)
@@ -58,7 +56,7 @@ begin
 				4'b0010: seg = 7'b1111001;
 				4'b0100: seg = 7'b0100100;
 				4'b1000: seg = 7'b0110000;
-				default: seg = 7'b1111111;
+				default: seg = seg;
                 endcase
 			end
 	2'b10:  begin //Displays "P" if picking up or "d" if dropping off. If neither turns off

@@ -3,7 +3,7 @@ input clk,
 input sw_ON,
 input pulse,
 input [1:0] dist_state,
-input proximity,
+input [1:0] proximity,
 input [1:0] IR_state,
 input servo_done,
 output reg servo_state,
@@ -39,13 +39,13 @@ begin
 		begin
 			enable <= 0;	//Stop rover.
 			//servo_EN <= 1;
-			servo_state <= 0;	//Activate pickup.
+			servo_state <= 1;	//Activate pickup.
 		end
 		3:// Drop off at station.
 		begin
 			enable <= 0;	//Stop rover
 			//servo_EN <= 1;
-			servo_state <= 1;	//Active dropoff routine.
+			servo_state <= 0;	//Active dropoff routine.
 		end
 		default: //Rover is stopped 
 		begin
@@ -57,7 +57,7 @@ begin
 	if(servo_done)	//Resume movement, rover is moving.
 		state <= 0;
 		
-	if(proximity)	//Stops at station and checks color.
+	if(|proximity[1:0])	//Stops at station and checks color.
 		state <= 1;
 		
 	end
