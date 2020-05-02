@@ -1,11 +1,12 @@
 module servo(
 input clk,
-	input [1:0] servo_flag,
+input servo_flag,
 output MAGNET,
 output reg [18:0] s_duty,
 output reg move_flag,
 output SERVO,
-input s_pulse
+input s_pulse,
+input enable_servo
 );
 
 //Count used for increment
@@ -26,9 +27,9 @@ assign MAGNET = magnetEnable;
 always @(posedge clk)
 begin
 
-	if(servoFlagPrev == 0 && servo_flag[1] == 1)
+	if(servoFlagPrev == 0 && enable_servo == 1)
 	begin
-		if(servo_flag[0])
+		if(servo_flag)
 		begin
 			mode = 2'b10;
 		end
@@ -37,7 +38,7 @@ begin
 			mode = 2'b01;
 		end
 	end
-	servoFlagPrev = servo_flag[1];
+	servoFlagPrev = enable_servo;
 
 	
 	//Resets move flag back to 0 after a clock pulse pass
@@ -52,7 +53,7 @@ begin
 			move_flag_reset = move_flag_reset + 1;
 	end
 
-	if(servo_flag[1])
+	if(enable_servo)
 	begin
 		//Count used to slow down Servo
 		count = count + 1;
@@ -100,7 +101,7 @@ begin
 	
 
 		//Same servo movement
-		if(count == 0 && servo_flag[1])
+		if(count == 0 && enable_servo)
 		begin
 			case(servoFlag)
 				2'b00: //To Neutral (90)
