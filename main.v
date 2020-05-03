@@ -13,7 +13,7 @@ Last updated : 4/29/2020.
 
 module main(
 	input clk,
-	input [6:0] sw,
+	input [7:0] sw,
 	input [3:0] IR,
 	input [2:0] IPS,
 	input [3:0] DIS,
@@ -90,7 +90,7 @@ flag_handling main_stateMachine(
 	.IR_state (IR_state),
 	.servo_done (servo_done),
 	.servo_state (servo_state),
-	//.servo_EN (servo_EN),
+	.servo_EN (servo_EN),
 	.state (MSM_state)
 );
 
@@ -118,6 +118,7 @@ servo servo_stateMachine(
 	.servo_flag (servo_state),
 	.s_duty (s_duty),
 	.s_pulse (s_pulse),
+	.enable_servo (servo_EN),
 	.move_flag (servo_done),
 	.SERVO (SERVO),
 	.MAGNET (MAGNET)
@@ -134,7 +135,7 @@ freq_counter frequency_Counter(
 planB altColor(
 	.clk (clk),
 	.sw (sw[6:4]),
-	.proximity (proximity[0]),
+	.proximity (proximity[1:0]),
 	.color (color_state)
 );
 

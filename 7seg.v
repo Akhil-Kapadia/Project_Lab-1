@@ -34,10 +34,22 @@ always @ (posedge clk)
 	count = count + 1;
 wire [1:0] refresh;
 assign refresh = count[18:17];//Refreshing Display
+reg [1:0] last;
+always @ (posedge clk)
+begin
+last <= instruction;
+	case(IR)
+	~4'b0001: instruction[1:0] <= 2'b00;		//Stop instructions @ 10 KHz	
+	~4'b0010: instruction[1:0] <= 2'b01;		//Pick Up from Red and Blue. @200Hz
+	~4'b0100: instruction[1:0] <= 2'b10;		//Pick up from Red and Green. @1kHz
+	~4'b1000: instruction[1:0] <= 2'b11;       //Pick up from Blue and green. @5kHz	
+	default: instruction[1:0] <= last;
+	endcase
 
+end
+reg [1:0] instruction;
 always @(*)
 begin
-
 	case(refresh)
 	2'b00:	begin //	Sets 7seg to display "1" or "0" depending if overcurrent detected.
 				an = 4'b0111;
@@ -50,19 +62,18 @@ begin
 			end
 	2'b01:  begin //Displays which IR signal we are getting.	
 				an = 4'b1011;
-                seg = 7'b1111111;
-                case(IR)
-				4'b0001: seg = 7'b1000000;
-				4'b0010: seg = 7'b1111001;
-				4'b0100: seg = 7'b0100100;
-				4'b1000: seg = 7'b0110000;
-				default: seg = seg;
+                case(instruction)
+				2'b00: seg <= 7'b1000000;	//Displays 0
+				2'b01: seg <= 7'b1111001;	//Displays 1
+				2'b10: seg <= 7'b0100100;	//Displays 2
+				2'b11: seg <= 7'b0110000;	//Displays 3
+				default: seg <= seg;
                 endcase
 			end
 	2'b10:  begin //Displays "P" if picking up or "d" if dropping off. If neither turns off
 				an = 4'b1101;
 				seg = (MSM == 2) ? 7'b0001100 :
-					  (MSM == 3) ? 7'b0100001 : 7'b10111111;
+					  (MSM == 3) ? 7'b0100001 : 7'b0111111;
 			end
 	2'b11:  begin //Displays the current state for the MSM
 				an = 4'b1110;

@@ -1,3 +1,18 @@
+/*
+-------------------------------------------------------
+Distance Sensor Module
+-------------------------------------------------------
+Taking 4 inputs from the IR distance sensor circuit (Active high) compares when
+the two sensors on the same side detect a station. This means we are in front of
+a station. This is done for both left and right side of the station.
+
+This module outputs the side the station is on, and emits a 10ns pulse when a 
+station is detected. This is called proximity and 0 is for the right side and
+1 for the left.
+-------------------------------------------------------
+Author : Akhil Kapadia
+-------------------------------------------------------
+*/
 module Distance_sensor(
     input clk,
     input [3:0] DIS,

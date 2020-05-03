@@ -1,7 +1,7 @@
 module planB(
 input clk,
 input [2:0] sw,
-input proximity,
+input [1:0] proximity,
 output reg [2:0] color
 );
 
@@ -11,7 +11,7 @@ reg [1:0] count;
 
 always @ (posedge clk)
 begin
-	count = (proximity) ? count + 1 : count;
+	count <= (|proximity[1:0]) ? count + 1 : count;
 	
 	case(sw[2:0])
 	3'b100: //station order R, G, B.

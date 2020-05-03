@@ -1,3 +1,17 @@
+/*
+--------------------------------------------------------
+Path Following Module
+--------------------------------------------------------
+This module takes in 3 active low inputs from 3 IPS sensors mounted on the front 
+of the rover. Depending on which one sensor is activated, the direction of the 
+rover will change. The rovers directions is controlled by 4 outputs from the 
+basys to the hbridge. The IPS sensors changes the outputs which change the current
+flow to the rover.
+--------------------------------------------------------
+Author : Akhil Kapadia
+--------------------------------------------------------
+*/
+
 module IPS_sensors(
 input clk,
 input [2:0] IPS,

@@ -5,7 +5,8 @@ output MAGNET,
 output reg [18:0] s_duty,
 output reg move_flag,
 output SERVO,
-input s_pulse
+input s_pulse,
+input enable_servo
 );
 
 //Count used for increment
@@ -19,7 +20,6 @@ reg [1:0] mode;
 reg [1:0] servoFlag;
 reg magnetEnable;
 reg moveFlag;
-reg enableServo;
 reg servoFlagPrev = 0;
 
 assign MAGNET = magnetEnable;
@@ -27,14 +27,8 @@ assign MAGNET = magnetEnable;
 always @(posedge clk)
 begin
 
-	if(servoFlagPrev == servo_flag)
+	if(servoFlagPrev == 0 && enable_servo == 1)
 	begin
-		servoFlagPrev = servo_flag;
-	end
-	else
-	begin
-		servoFlagPrev = servo_flag;
-		enableServo = 1;
 		if(servo_flag)
 		begin
 			mode = 2'b10;
@@ -44,6 +38,8 @@ begin
 			mode = 2'b01;
 		end
 	end
+	servoFlagPrev = enable_servo;
+
 	
 	//Resets move flag back to 0 after a clock pulse pass
 	if(move_flag == 1)
@@ -57,7 +53,7 @@ begin
 			move_flag_reset = move_flag_reset + 1;
 	end
 
-	if(enableServo)
+	if(enable_servo)
 	begin
 		//Count used to slow down Servo
 		count = count + 1;
@@ -99,14 +95,13 @@ begin
 				begin
 					moveFlag = 0;
 					magnetEnable = 0;
-					enableServo = 0;
 				end
 			end
 		endcase
 	
 
 		//Same servo movement
-		if(count == 0 && enableServo)
+		if(count == 0 && enable_servo)
 		begin
 			case(servoFlag)
 				2'b00: //To Neutral (90)

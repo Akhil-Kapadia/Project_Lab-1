@@ -1,3 +1,18 @@
+/*
+--------------------------------------------------------
+Color Sensor Module
+-------------------------------------------------------
+Works in tandem with freq_counter module. Saves the frequency found to the 
+corresponding register of color. (R,G,B,C). Then changes the diode being read on
+the color sensor. 
+Once data saved, performs percentage operation for each filter diode over clear
+using the calc_perc module.
+Once the percentage is found, it will be compared to values found through testing
+to determine which color was detected.
+-------------------------------------------------------
+Author : Akhil Kapadia
+-------------------------------------------------------
+*/
 module color_sensor(
 	input clk,
 	input [18:0] frequency,
