@@ -1,4 +1,4 @@
-module flag_handling(
+module mainStateMachine(
 input clk,
 input sw_ON,
 input pulse,

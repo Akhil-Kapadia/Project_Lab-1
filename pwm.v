@@ -5,10 +5,8 @@ Pulse Width Modulation Module
 Creates a pwm signal with a given period and duty cycle. Based on the 10 ns clk
 of the basys board, will generated a signal that counts by 10 ns.
 -------------------------------------------------------
-Author : Rice Rodriguez
--------------------------------------------------------
--------------------------------------------------------
-Collaborator : Akhil Kapadia
+Author : Akhil Kapadia
+Code based off pwm.v by Rice Rodriguez.
 -------------------------------------------------------
 */
 module pwm #(parameter SIZE = 12, PERIOD = 4095)
