@@ -80,7 +80,7 @@ sevenSeg disp(
 
 
 //Main module that combines all different functions of rover to make it work.
-flag_handling main_stateMachine(
+mainStateMachine main_stateMachine(
 	.clk (clk),
 	.sw_ON (sw_ON),
 	.pulse (speed),
